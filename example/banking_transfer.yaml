@@ -1,0 +1,113 @@
+# ═══════════════════════════════════════════════════════════
+# Example: Banking Transfer Feature
+# ═══════════════════════════════════════════════════════════
+# 
+# Run: clean_feature_gen generate --config example/banking_transfer.yaml
+#
+
+feature: international_transfer
+state_management: bloc
+has_api: true
+api_base: /api/v1/transfers/international
+generate_tests: true
+generate_di: true
+generate_routes: true
+use_json_serializable: true
+has_local_data_source: true
+
+models:
+  - name: TransferBeneficiary
+    fields:
+      - name: id
+        type: String
+      - name: fullName
+        type: String
+        json_key: full_name
+      - name: iban
+        type: String
+      - name: swiftCode
+        type: String
+        json_key: swift_code
+      - name: bankName
+        type: String
+        json_key: bank_name
+      - name: country
+        type: String
+      - name: isActive
+        type: bool
+        default: "true"
+        json_key: is_active
+
+  - name: TransferRequest
+    fields:
+      - name: id
+        type: String
+      - name: amount
+        type: double
+      - name: currency
+        type: String
+      - name: beneficiaryId
+        type: String
+        json_key: beneficiary_id
+      - name: purpose
+        type: String
+      - name: reference
+        type: String?
+      - name: status
+        type: String
+      - name: createdAt
+        type: DateTime
+        json_key: created_at
+
+usecases:
+  - name: GetBeneficiaries
+    return_type: List<TransferBeneficiary>
+  
+  - name: AddBeneficiary
+    return_type: TransferBeneficiary
+    params:
+      - name: beneficiary
+        type: TransferBeneficiary
+  
+  - name: InitiateTransfer
+    return_type: TransferRequest
+    params:
+      - name: request
+        type: TransferRequest
+  
+  - name: GetTransferHistory
+    return_type: List<TransferRequest>
+  
+  - name: GetTransferStatus
+    return_type: TransferRequest
+    params:
+      - name: transferId
+        type: String
+  
+  - name: CancelTransfer
+    return_type: void
+    params:
+      - name: transferId
+        type: String
+
+screens:
+  - name: BeneficiaryListScreen
+    type: stateless
+    has_app_bar: true
+    pull_to_refresh: true
+    loading_state: true
+    error_state: true
+    empty_state: true
+
+  - name: AddBeneficiaryScreen
+    type: stateful
+    has_app_bar: true
+
+  - name: TransferFormScreen
+    type: stateful
+    has_app_bar: true
+
+  - name: TransferHistoryScreen
+    type: stateless
+    has_app_bar: true
+    pull_to_refresh: true
