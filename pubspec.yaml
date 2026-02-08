@@ -5,10 +5,10 @@ description: >-
   domain layer, presentation layer, DI setup, routes, and unit tests from
   a simple YAML configuration.
 version: 1.0.0
-homepage: https://github.com/anthropic/clean_feature_gen
-repository: https://github.com/anthropic/clean_feature_gen
-issue_tracker: https://github.com/anthropic/clean_feature_gen/issues
-documentation: https://github.com/anthropic/clean_feature_gen#readme
+homepage: https://github.com/d2square/clean_feature_gen
+repository: https://github.com/d2square/clean_feature_gen
+issue_tracker: https://github.com/d2square/clean_feature_gen/issues
+documentation: https://github.com/d2square/clean_feature_gen#readme
 
 topics:
   - clean-architecture
