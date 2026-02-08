@@ -1,7 +1,6 @@
 #!/usr/bin/env dart
 
 import 'dart:io';
-import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:clean_feature_gen/clean_feature_gen.dart';
 

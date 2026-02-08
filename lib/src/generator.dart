@@ -199,10 +199,6 @@ class FeatureGenerator {
       );
     }
 
-    // State (shared between bloc and cubit)
-    final stateDir = config.stateManagement == StateManagement.bloc
-        ? 'bloc'
-        : 'cubit';
     // State file always goes in 'bloc' folder for both (shared)
     await _writeFile(
       p.join(presPath, 'bloc', '${snakeName}_state.dart'),
