@@ -1,16 +1,21 @@
 /// Defines a parameter for a use case.
 class ParamDefinition {
-  final String name;
-  final String type;
-
+  /// Creates a new [ParamDefinition].
   const ParamDefinition({required this.name, required this.type});
 
+  /// Create from a parsed YAML map.
   factory ParamDefinition.fromYaml(Map<String, dynamic> yaml) {
     return ParamDefinition(
       name: yaml['name'] as String,
       type: yaml['type'] as String,
     );
   }
+
+  /// Parameter name in camelCase.
+  final String name;
+
+  /// Parameter Dart type.
+  final String type;
 }
 
 /// Defines a use case (business logic operation).
@@ -22,21 +27,7 @@ class ParamDefinition {
 /// - A corresponding method in the DataSource
 /// - An event/handler in the BLoC (or method in Cubit)
 class UsecaseDefinition {
-  /// Use case name in PascalCase (e.g., 'GetUserProfile').
-  final String name;
-
-  /// Return type (e.g., 'User', 'List<User>', 'void', 'bool').
-  final String returnType;
-
-  /// Parameters for this use case.
-  final List<ParamDefinition> params;
-
-  /// Whether this is a stream-based use case (e.g., real-time data).
-  final bool isStream;
-
-  /// Whether to wrap return type in Either<Failure, T>.
-  final bool useEither;
-
+  /// Creates a new [UsecaseDefinition].
   const UsecaseDefinition({
     required this.name,
     this.returnType = 'void',
@@ -45,6 +36,7 @@ class UsecaseDefinition {
     this.useEither = true,
   });
 
+  /// Create from a parsed YAML map.
   factory UsecaseDefinition.fromYaml(Map<String, dynamic> yaml) {
     final params = <ParamDefinition>[];
     if (yaml['params'] != null) {
@@ -64,12 +56,28 @@ class UsecaseDefinition {
     );
   }
 
+  /// Use case name in PascalCase (e.g., 'GetUserProfile').
+  final String name;
+
+  /// Return type (e.g., `User`, `void`, `bool`).
+  final String returnType;
+
+  /// Parameters for this use case.
+  final List<ParamDefinition> params;
+
+  /// Whether this is a stream-based use case (e.g., real-time data).
+  final bool isStream;
+
+  /// Whether to wrap return type in a result tuple.
+  final bool useEither;
+
   /// Whether this use case has parameters.
   bool get hasParams => params.isNotEmpty;
 
   /// Whether the use case returns void.
   bool get isVoid => returnType == 'void';
 
+  /// Validate this use case definition.
   List<String> validate() {
     final errors = <String>[];
     if (name.isEmpty) errors.add('UseCase name cannot be empty.');

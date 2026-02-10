@@ -1,3 +1,11 @@
+## 1.0.1
+
+- Fix: Shortened pubspec description to meet pub.dev 60-180 char requirement
+- Fix: Escaped angle brackets in dartdoc comments to resolve pana warnings
+- Fix: Added dartdoc comments to all public API members
+- Added: `example/example.dart` with complete programmatic usage guide
+- Improved: Documentation coverage now exceeds 90%
+
 ## 1.0.0
 
 - 🎉 Initial release

@@ -4,13 +4,7 @@ import '../utils/logger.dart';
 
 /// CLI command to initialize a sample YAML config file.
 class InitCommand extends Command<void> {
-  @override
-  String get name => 'init';
-
-  @override
-  String get description =>
-      'Create a sample feature configuration YAML file.';
-
+  /// Creates a new [InitCommand].
   InitCommand() {
     argParser.addOption('output',
         abbr: 'o',
@@ -19,8 +13,15 @@ class InitCommand extends Command<void> {
   }
 
   @override
+  String get name => 'init';
+
+  @override
+  String get description =>
+      'Create a sample feature configuration YAML file.';
+
+  @override
   Future<void> run() async {
-    final logger = const Logger();
+    const logger = Logger();
     final outputPath = argResults!['output'] as String;
     final file = File(outputPath);
 

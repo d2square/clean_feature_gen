@@ -1,8 +1,12 @@
 /// Screen widget type.
 enum ScreenType {
+  /// StatelessWidget.
   stateless,
+
+  /// StatefulWidget.
   stateful;
 
+  /// Parse from a string value.
   static ScreenType fromString(String value) {
     switch (value.toLowerCase()) {
       case 'stateful':
@@ -21,6 +25,34 @@ enum ScreenType {
 /// - A corresponding widgets directory
 /// - Route configuration entry
 class ScreenDefinition {
+  /// Creates a new [ScreenDefinition].
+  const ScreenDefinition({
+    required this.name,
+    this.type = ScreenType.stateless,
+    this.hasOwnBloc = true,
+    this.hasAppBar = true,
+    this.hasPullToRefresh = false,
+    this.hasLoadingState = true,
+    this.hasErrorState = true,
+    this.hasEmptyState = true,
+  });
+
+  /// Create from a parsed YAML map.
+  factory ScreenDefinition.fromYaml(Map<String, dynamic> yaml) {
+    return ScreenDefinition(
+      name: yaml['name'] as String,
+      type: yaml['type'] != null
+          ? ScreenType.fromString(yaml['type'] as String)
+          : ScreenType.stateless,
+      hasOwnBloc: yaml['has_own_bloc'] as bool? ?? true,
+      hasAppBar: yaml['has_app_bar'] as bool? ?? true,
+      hasPullToRefresh: yaml['pull_to_refresh'] as bool? ?? false,
+      hasLoadingState: yaml['loading_state'] as bool? ?? true,
+      hasErrorState: yaml['error_state'] as bool? ?? true,
+      hasEmptyState: yaml['empty_state'] as bool? ?? true,
+    );
+  }
+
   /// Screen name in PascalCase (e.g., 'UserProfileScreen').
   final String name;
 
@@ -45,32 +77,7 @@ class ScreenDefinition {
   /// Whether to include an empty state widget.
   final bool hasEmptyState;
 
-  const ScreenDefinition({
-    required this.name,
-    this.type = ScreenType.stateless,
-    this.hasOwnBloc = true,
-    this.hasAppBar = true,
-    this.hasPullToRefresh = false,
-    this.hasLoadingState = true,
-    this.hasErrorState = true,
-    this.hasEmptyState = true,
-  });
-
-  factory ScreenDefinition.fromYaml(Map<String, dynamic> yaml) {
-    return ScreenDefinition(
-      name: yaml['name'] as String,
-      type: yaml['type'] != null
-          ? ScreenType.fromString(yaml['type'] as String)
-          : ScreenType.stateless,
-      hasOwnBloc: yaml['has_own_bloc'] as bool? ?? true,
-      hasAppBar: yaml['has_app_bar'] as bool? ?? true,
-      hasPullToRefresh: yaml['pull_to_refresh'] as bool? ?? false,
-      hasLoadingState: yaml['loading_state'] as bool? ?? true,
-      hasErrorState: yaml['error_state'] as bool? ?? true,
-      hasEmptyState: yaml['empty_state'] as bool? ?? true,
-    );
-  }
-
+  /// Validate this screen definition.
   List<String> validate() {
     final errors = <String>[];
     if (name.isEmpty) errors.add('Screen name cannot be empty.');

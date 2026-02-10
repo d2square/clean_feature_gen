@@ -1,14 +1,10 @@
 name: clean_feature_gen
-description: >-
-  A powerful CLI tool and library for generating complete Clean Architecture
-  feature modules in Flutter with BLoC/Cubit support. Generates data layer,
-  domain layer, presentation layer, DI setup, routes, and unit tests from
-  a simple YAML configuration.
-version: 1.0.0
-homepage: https://github.com/d2square/clean_feature_gen
-repository: https://github.com/d2square/clean_feature_gen
-issue_tracker: https://github.com/d2square/clean_feature_gen/issues
-documentation: https://github.com/d2square/clean_feature_gen#readme
+description: "Generate complete Clean Architecture features for Flutter — entities, models, BLoC/Cubit, repositories, DI, routes, and tests from YAML config."
+version: 1.0.1
+homepage: https://github.com/anthropic/clean_feature_gen
+repository: https://github.com/anthropic/clean_feature_gen
+issue_tracker: https://github.com/anthropic/clean_feature_gen/issues
+documentation: https://github.com/anthropic/clean_feature_gen#readme
 
 topics:
   - clean-architecture

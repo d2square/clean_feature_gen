@@ -142,7 +142,7 @@ class BlocTemplate {
     buffer.write(StringUtils.fileHeader(
         'Events for ${config.name.toPascalCase} BLoC'));
 
-    buffer.writeln('/// Base event for ${blocName}.');
+    buffer.writeln('/// Base event for $blocName.');
     buffer.writeln('sealed class ${blocName}Event {');
     buffer.writeln('  const ${blocName}Event();');
     buffer.writeln('}');
@@ -199,7 +199,7 @@ class BlocTemplate {
     buffer.writeln('');
 
     // State class
-    buffer.writeln('/// State for [${blocName}].');
+    buffer.writeln('/// State for [$blocName].');
     buffer.writeln('class ${blocName}State {');
     buffer.writeln('  final ${blocName}Status status;');
     buffer.writeln('  final String? errorMessage;');

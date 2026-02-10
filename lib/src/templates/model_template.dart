@@ -68,7 +68,7 @@ class ModelTemplate {
     for (final field in model.fields) {
       final jsonKey = field.jsonKey ?? field.name.toSnakeCase;
       buffer.writeln(
-          "      ${field.name}: ${_fromJsonExpression(field, jsonKey)},");
+          '      ${field.name}: ${_fromJsonExpression(field, jsonKey)},');
     }
     buffer.writeln('    );');
     buffer.writeln('  }');

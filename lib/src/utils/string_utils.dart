@@ -25,7 +25,7 @@ class StringUtils {
   /// Generate a proper Dart import path from a feature name and file name.
   static String importPath(String packageName, String featureName, String layer,
       String sublayer, String fileName) {
-    return "package:$packageName/features/$featureName/$layer/$sublayer/$fileName";
+    return 'package:$packageName/features/$featureName/$layer/$sublayer/$fileName';
   }
 
   /// Generate a relative import path.

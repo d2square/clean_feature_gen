@@ -1,9 +1,29 @@
 /// Defines a single field within a model.
 class FieldDefinition {
+  /// Creates a new [FieldDefinition].
+  const FieldDefinition({
+    required this.name,
+    required this.type,
+    this.defaultValue,
+    this.jsonKey,
+    this.isRequired = true,
+  });
+
+  /// Create from a parsed YAML map.
+  factory FieldDefinition.fromYaml(Map<String, dynamic> yaml) {
+    return FieldDefinition(
+      name: yaml['name'] as String,
+      type: yaml['type'] as String,
+      defaultValue: yaml['default'] as String?,
+      jsonKey: yaml['json_key'] as String?,
+      isRequired: yaml['required'] as bool? ?? true,
+    );
+  }
+
   /// Field name in camelCase (e.g., 'firstName').
   final String name;
 
-  /// Dart type (e.g., 'String', 'int', 'List<String>', 'DateTime?').
+  /// Dart type (e.g., `String`, `int`, `DateTime?`).
   final String type;
 
   /// Default value as a string expression (e.g., "'unknown'", '0', 'false').
@@ -14,24 +34,6 @@ class FieldDefinition {
 
   /// Whether this field is required in constructors.
   final bool isRequired;
-
-  const FieldDefinition({
-    required this.name,
-    required this.type,
-    this.defaultValue,
-    this.jsonKey,
-    this.isRequired = true,
-  });
-
-  factory FieldDefinition.fromYaml(Map<String, dynamic> yaml) {
-    return FieldDefinition(
-      name: yaml['name'] as String,
-      type: yaml['type'] as String,
-      defaultValue: yaml['default'] as String?,
-      jsonKey: yaml['json_key'] as String?,
-      isRequired: yaml['required'] as bool? ?? true,
-    );
-  }
 
   /// Whether this type is nullable.
   bool get isNullable => type.endsWith('?');
@@ -45,8 +47,11 @@ class FieldDefinition {
 
   /// Whether this is a collection type.
   bool get isList => type.startsWith('List<');
+
+  /// Whether this is a map type.
   bool get isMap => type.startsWith('Map<');
 
+  /// Validate this field definition.
   List<String> validate() {
     final errors = <String>[];
     if (name.isEmpty) errors.add('Field name cannot be empty.');
@@ -62,21 +67,7 @@ class FieldDefinition {
 /// - A model/DTO class in the data layer (with JSON serialization)
 /// - Mapper extension between entity and model
 class ModelDefinition {
-  /// Model name in PascalCase (e.g., 'UserProfile').
-  final String name;
-
-  /// Fields for this model.
-  final List<FieldDefinition> fields;
-
-  /// Whether to generate copyWith method.
-  final bool generateCopyWith;
-
-  /// Whether to generate equality (== and hashCode).
-  final bool generateEquality;
-
-  /// Whether to generate toString override.
-  final bool generateToString;
-
+  /// Creates a new [ModelDefinition].
   const ModelDefinition({
     required this.name,
     required this.fields,
@@ -85,6 +76,7 @@ class ModelDefinition {
     this.generateToString = true,
   });
 
+  /// Create from a parsed YAML map.
   factory ModelDefinition.fromYaml(Map<String, dynamic> yaml) {
     final fields = <FieldDefinition>[];
     if (yaml['fields'] != null) {
@@ -92,7 +84,6 @@ class ModelDefinition {
         if (f is Map<String, dynamic>) {
           fields.add(FieldDefinition.fromYaml(f));
         } else if (f is String) {
-          // Support shorthand: "name: String"
           final parts = f.split(':').map((e) => e.trim()).toList();
           if (parts.length == 2) {
             fields.add(FieldDefinition(name: parts[0], type: parts[1]));
@@ -110,6 +101,22 @@ class ModelDefinition {
     );
   }
 
+  /// Model name in PascalCase (e.g., 'UserProfile').
+  final String name;
+
+  /// Fields for this model.
+  final List<FieldDefinition> fields;
+
+  /// Whether to generate copyWith method.
+  final bool generateCopyWith;
+
+  /// Whether to generate equality (== and hashCode).
+  final bool generateEquality;
+
+  /// Whether to generate toString override.
+  final bool generateToString;
+
+  /// Validate this model definition.
   List<String> validate() {
     final errors = <String>[];
     if (name.isEmpty) errors.add('Model name cannot be empty.');

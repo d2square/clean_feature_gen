@@ -1,22 +1,21 @@
 import 'dart:io';
 import 'package:test/test.dart';
 import 'package:clean_feature_gen/clean_feature_gen.dart';
-import 'package:clean_feature_gen/src/models/model_definition.dart';
 
 void main() {
   group('FeatureConfig', () {
     test('validates feature name correctly', () {
-      final config = FeatureConfig(name: 'user_profile');
+      const config = FeatureConfig(name: 'user_profile');
       expect(config.validate(), isEmpty);
     });
 
     test('rejects invalid feature name', () {
-      final config = FeatureConfig(name: 'UserProfile');
+      const config = FeatureConfig(name: 'UserProfile');
       expect(config.validate(), isNotEmpty);
     });
 
     test('rejects empty feature name', () {
-      final config = FeatureConfig(name: '');
+      const config = FeatureConfig(name: '');
       expect(config.validate(), isNotEmpty);
     });
 
@@ -70,7 +69,7 @@ void main() {
 
   group('ModelDefinition', () {
     test('validates correctly', () {
-      final model = ModelDefinition(
+      const model = ModelDefinition(
         name: 'User',
         fields: [FieldDefinition(name: 'id', type: 'int')],
       );
@@ -78,7 +77,7 @@ void main() {
     });
 
     test('rejects empty name', () {
-      final model = ModelDefinition(
+      const model = ModelDefinition(
         name: '',
         fields: [FieldDefinition(name: 'id', type: 'int')],
       );
@@ -86,7 +85,7 @@ void main() {
     });
 
     test('rejects non-PascalCase name', () {
-      final model = ModelDefinition(
+      const model = ModelDefinition(
         name: 'user_model',
         fields: [FieldDefinition(name: 'id', type: 'int')],
       );
@@ -94,40 +93,40 @@ void main() {
     });
 
     test('rejects empty fields', () {
-      final model = ModelDefinition(name: 'User', fields: []);
+      const model = ModelDefinition(name: 'User', fields: []);
       expect(model.validate(), isNotEmpty);
     });
   });
 
   group('FieldDefinition', () {
     test('detects nullable type', () {
-      final field = FieldDefinition(name: 'avatar', type: 'String?');
+      const field = FieldDefinition(name: 'avatar', type: 'String?');
       expect(field.isNullable, true);
       expect(field.baseType, 'String');
     });
 
     test('detects non-nullable type', () {
-      final field = FieldDefinition(name: 'name', type: 'String');
+      const field = FieldDefinition(name: 'name', type: 'String');
       expect(field.isNullable, false);
       expect(field.baseType, 'String');
     });
 
     test('detects list type', () {
-      final field = FieldDefinition(name: 'tags', type: 'List<String>');
+      const field = FieldDefinition(name: 'tags', type: 'List<String>');
       expect(field.isList, true);
     });
 
     test('detects primitive type', () {
       expect(
-        FieldDefinition(name: 'x', type: 'String').isPrimitive,
+        const FieldDefinition(name: 'x', type: 'String').isPrimitive,
         true,
       );
       expect(
-        FieldDefinition(name: 'x', type: 'int').isPrimitive,
+        const FieldDefinition(name: 'x', type: 'int').isPrimitive,
         true,
       );
       expect(
-        FieldDefinition(name: 'x', type: 'User').isPrimitive,
+        const FieldDefinition(name: 'x', type: 'User').isPrimitive,
         false,
       );
     });
@@ -135,17 +134,17 @@ void main() {
 
   group('UsecaseDefinition', () {
     test('validates correctly', () {
-      final uc = UsecaseDefinition(name: 'GetUser', returnType: 'User');
+      const uc = UsecaseDefinition(name: 'GetUser', returnType: 'User');
       expect(uc.validate(), isEmpty);
     });
 
     test('detects void return', () {
-      final uc = UsecaseDefinition(name: 'DeleteUser', returnType: 'void');
+      const uc = UsecaseDefinition(name: 'DeleteUser', returnType: 'void');
       expect(uc.isVoid, true);
     });
 
     test('detects params', () {
-      final uc = UsecaseDefinition(
+      const uc = UsecaseDefinition(
         name: 'GetUser',
         params: [ParamDefinition(name: 'id', type: 'int')],
       );
@@ -174,7 +173,6 @@ void main() {
 
     setUp(() {
       tempDir = Directory.systemTemp.createTempSync('clean_gen_test_');
-      // Create a fake pubspec.yaml
       File('${tempDir.path}/pubspec.yaml').writeAsStringSync('name: test_app');
       Directory('${tempDir.path}/lib').createSync();
       Directory('${tempDir.path}/test').createSync();
@@ -185,7 +183,7 @@ void main() {
     });
 
     test('generates all files for a basic feature', () async {
-      final config = FeatureConfig(
+      const config = FeatureConfig(
         name: 'login',
         stateManagement: StateManagement.bloc,
         hasApi: true,
@@ -222,7 +220,6 @@ void main() {
 
       await generator.generate();
 
-      // Verify key files exist
       final featureDir = '${tempDir.path}/lib/features/login';
 
       expect(File('$featureDir/domain/entities/user_entity.dart').existsSync(),
@@ -266,7 +263,6 @@ void main() {
           File('$featureDir/routes/login_routes.dart').existsSync(), true);
       expect(File('$featureDir/login.dart').existsSync(), true);
 
-      // Verify test files
       expect(
           File('${tempDir.path}/test/features/login/login_bloc_test.dart')
               .existsSync(),
@@ -278,7 +274,7 @@ void main() {
     });
 
     test('does not overwrite existing files by default', () async {
-      final config = FeatureConfig(
+      const config = FeatureConfig(
         name: 'simple',
         models: [
           ModelDefinition(
@@ -294,18 +290,13 @@ void main() {
         logger: const Logger(verbose: false),
       );
 
-      // Generate first time
       await generator.generate();
 
-      // Read a file
       final entityFile = File(
           '${tempDir.path}/lib/features/simple/domain/entities/item_entity.dart');
-      final originalContent = entityFile.readAsStringSync();
 
-      // Modify it
       entityFile.writeAsStringSync('// modified');
 
-      // Generate again (no overwrite)
       final generator2 = FeatureGenerator(
         config: config,
         projectRoot: tempDir.path,
@@ -313,12 +304,11 @@ void main() {
       );
       await generator2.generate();
 
-      // Should still have modified content
       expect(entityFile.readAsStringSync(), '// modified');
     });
 
     test('overwrites files when flag is set', () async {
-      final config = FeatureConfig(
+      const config = FeatureConfig(
         name: 'overwrite_test',
         models: [
           ModelDefinition(
@@ -335,12 +325,10 @@ void main() {
       );
       await generator.generate();
 
-      // Modify
       final entityFile = File(
           '${tempDir.path}/lib/features/overwrite_test/domain/entities/data_entity.dart');
       entityFile.writeAsStringSync('// modified');
 
-      // Generate with overwrite
       final generator2 = FeatureGenerator(
         config: config,
         projectRoot: tempDir.path,
@@ -349,7 +337,6 @@ void main() {
       );
       await generator2.generate();
 
-      // Should be regenerated
       expect(entityFile.readAsStringSync(), isNot('// modified'));
     });
   });

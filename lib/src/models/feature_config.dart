@@ -4,9 +4,13 @@ import 'screen_definition.dart';
 
 /// Supported state management approaches.
 enum StateManagement {
+  /// BLoC pattern with events and states.
   bloc,
+
+  /// Cubit pattern with methods and states.
   cubit;
 
+  /// Parse from a string value.
   static StateManagement fromString(String value) {
     switch (value.toLowerCase()) {
       case 'bloc':
@@ -24,92 +28,10 @@ enum StateManagement {
 /// This is the primary configuration object that drives the entire
 /// code generation process. It can be created programmatically or
 /// parsed from a YAML file.
-///
-/// Example YAML:
-/// ```yaml
-/// feature: user_profile
-/// state_management: bloc
-/// has_api: true
-/// api_base: /api/v1/users
-/// generate_tests: true
-/// generate_di: true
-/// models:
-///   - name: User
-///     fields:
-///       - name: id
-///         type: int
-///       - name: email
-///         type: String
-///       - name: fullName
-///         type: String
-///       - name: avatar
-///         type: String?
-/// usecases:
-///   - name: GetUserProfile
-///     return_type: User
-///     params:
-///       - name: userId
-///         type: int
-///   - name: UpdateUserProfile
-///     return_type: User
-///     params:
-///       - name: user
-///         type: User
-/// screens:
-///   - name: UserProfileScreen
-///     type: stateless
-///   - name: EditProfileScreen
-///     type: stateful
-/// ```
 class FeatureConfig {
-  /// The feature name in snake_case (e.g., 'user_profile').
-  final String name;
-
-  /// State management approach: bloc or cubit.
-  final StateManagement stateManagement;
-
-  /// Whether this feature makes API calls.
-  final bool hasApi;
-
-  /// Base API endpoint path (e.g., '/api/v1/users').
-  final String? apiBase;
-
-  /// Whether to generate unit test stubs.
-  final bool generateTests;
-
-  /// Whether to generate dependency injection setup.
-  final bool generateDi;
-
-  /// Whether to generate route configuration.
-  final bool generateRoutes;
-
-  /// Whether to generate Freezed-compatible models.
-  final bool useFreezed;
-
-  /// Whether to generate JSON serialization code.
-  final bool useJsonSerializable;
-
-  /// Custom base path for feature output (relative to lib/).
-  final String? basePath;
-
-  /// Data models for this feature.
-  final List<ModelDefinition> models;
-
-  /// Use cases / business logic operations.
-  final List<UsecaseDefinition> usecases;
-
-  /// Screen/page definitions.
-  final List<ScreenDefinition> screens;
-
-  /// Whether to include a local data source (e.g., Hive/SharedPreferences).
-  final bool hasLocalDataSource;
-
-  /// Whether to include pagination support in the repository.
-  final bool hasPagination;
-
-  /// Package name for imports (auto-detected from pubspec.yaml if not set).
-  final String? packageName;
-
+  /// Creates a new [FeatureConfig] with the given options.
+  ///
+  /// Only [name] is required. All other fields have sensible defaults.
   const FeatureConfig({
     required this.name,
     this.stateManagement = StateManagement.bloc,
@@ -174,6 +96,54 @@ class FeatureConfig {
     );
   }
 
+  /// The feature name in snake_case (e.g., 'user_profile').
+  final String name;
+
+  /// State management approach: bloc or cubit.
+  final StateManagement stateManagement;
+
+  /// Whether this feature makes API calls.
+  final bool hasApi;
+
+  /// Base API endpoint path (e.g., '/api/v1/users').
+  final String? apiBase;
+
+  /// Whether to generate unit test stubs.
+  final bool generateTests;
+
+  /// Whether to generate dependency injection setup.
+  final bool generateDi;
+
+  /// Whether to generate route configuration.
+  final bool generateRoutes;
+
+  /// Whether to generate Freezed-compatible models.
+  final bool useFreezed;
+
+  /// Whether to generate JSON serialization code.
+  final bool useJsonSerializable;
+
+  /// Custom base path for feature output (relative to lib/).
+  final String? basePath;
+
+  /// Data models for this feature.
+  final List<ModelDefinition> models;
+
+  /// Use cases / business logic operations.
+  final List<UsecaseDefinition> usecases;
+
+  /// Screen/page definitions.
+  final List<ScreenDefinition> screens;
+
+  /// Whether to include a local data source (e.g., Hive/SharedPreferences).
+  final bool hasLocalDataSource;
+
+  /// Whether to include pagination support in the repository.
+  final bool hasPagination;
+
+  /// Package name for imports (auto-detected from pubspec.yaml if not set).
+  final String? packageName;
+
   /// Validate the configuration and return any errors.
   List<String> validate() {
     final errors = <String>[];
@@ -185,10 +155,6 @@ class FeatureConfig {
     if (!RegExp(r'^[a-z][a-z0-9_]*$').hasMatch(name)) {
       errors.add(
           'Feature name must be snake_case (lowercase letters, numbers, underscores). Got: "$name"');
-    }
-
-    if (hasApi && apiBase == null) {
-      // Not an error, just a warning — we'll auto-generate from name
     }
 
     for (final model in models) {

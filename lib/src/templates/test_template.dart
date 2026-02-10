@@ -85,7 +85,7 @@ class TestTemplate {
 
       // Success test
       buffer.writeln(
-          "      blocTest<$blocName, ${blocName}State>(");
+          '      blocTest<$blocName, ${blocName}State>(');
       buffer.writeln(
           "        'emits [loading, loaded] when ${usecase.name.toCamelCase} succeeds',");
       buffer.writeln('        build: () {');
@@ -120,7 +120,7 @@ class TestTemplate {
       // Error test
       buffer.writeln('');
       buffer.writeln(
-          "      blocTest<$blocName, ${blocName}State>(");
+          '      blocTest<$blocName, ${blocName}State>(');
       buffer.writeln(
           "        'emits [loading, error] when ${usecase.name.toCamelCase} fails',");
       buffer.writeln('        build: () {');

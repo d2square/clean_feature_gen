@@ -35,7 +35,7 @@ class ScreenTemplate {
     buffer.writeln('  const ${screen.name}({super.key});');
     buffer.writeln('');
     buffer.writeln(
-        "  static const routeName = '/${snakeName}/${screen.name.toSnakeCase}';");
+        "  static const routeName = '/$snakeName/${screen.name.toSnakeCase}';");
     buffer.writeln('');
 
     if (screen.type == ScreenType.stateful) {
@@ -91,7 +91,7 @@ class ScreenTemplate {
     buffer.writeln(
         '          ScaffoldMessenger.of(context).showSnackBar(');
     buffer.writeln(
-        "            SnackBar(content: Text(state.errorMessage!)),");
+        '            SnackBar(content: Text(state.errorMessage!)),');
     buffer.writeln('          );');
     buffer.writeln('        }');
     buffer.writeln('      },');

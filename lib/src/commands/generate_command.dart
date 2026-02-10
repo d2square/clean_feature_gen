@@ -7,13 +7,7 @@ import '../utils/logger.dart';
 
 /// CLI command to generate a feature from YAML config or inline flags.
 class GenerateCommand extends Command<void> {
-  @override
-  String get name => 'generate';
-
-  @override
-  String get description =>
-      'Generate a complete Clean Architecture feature module.';
-
+  /// Creates a new [GenerateCommand].
   GenerateCommand() {
     argParser
       ..addOption('config',
@@ -55,6 +49,13 @@ class GenerateCommand extends Command<void> {
           defaultsTo: false,
           help: 'Show verbose output.');
   }
+
+  @override
+  String get name => 'generate';
+
+  @override
+  String get description =>
+      'Generate a complete Clean Architecture feature module.';
 
   @override
   Future<void> run() async {

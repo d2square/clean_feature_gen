@@ -13,7 +13,7 @@ class DiTemplate {
     buffer.write(StringUtils.fileHeader(
         'Dependency Injection for feature "${config.name}"'));
 
-    buffer.writeln("// Import your DI framework (get_it, injectable, etc.)");
+    buffer.writeln('// Import your DI framework (get_it, injectable, etc.)');
     buffer.writeln("// import 'package:get_it/get_it.dart';");
     buffer.writeln('');
 
@@ -43,7 +43,7 @@ class DiTemplate {
     }
     buffer.writeln('');
 
-    buffer.writeln('/// Register all dependencies for the ${pascal} feature.');
+    buffer.writeln('/// Register all dependencies for the $pascal feature.');
     buffer.writeln('///');
     buffer.writeln('/// Call this function from your main DI setup.');
     buffer.writeln('///');
@@ -151,7 +151,7 @@ class RouteTemplate {
     buffer.writeln('');
     for (final screen in config.screens) {
       buffer.writeln(
-          "  static const ${screen.name.toCamelCase} = '/${snake}/${screen.name.toSnakeCase}';");
+          "  static const ${screen.name.toCamelCase} = '/$snake/${screen.name.toSnakeCase}';");
     }
     buffer.writeln('}');
     buffer.writeln('');
@@ -174,7 +174,7 @@ class RouteTemplate {
     buffer.writeln('  return {');
     for (final screen in config.screens) {
       buffer.writeln(
-          "    ${config.name.toPascalCase}Routes.${screen.name.toCamelCase}: (_) => const ${screen.name}(),");
+          '    ${config.name.toPascalCase}Routes.${screen.name.toCamelCase}: (_) => const ${screen.name}(),');
     }
     buffer.writeln('  };');
     buffer.writeln('}');

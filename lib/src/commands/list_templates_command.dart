@@ -12,7 +12,7 @@ class ListTemplatesCommand extends Command<void> {
 
   @override
   Future<void> run() async {
-    final logger = const Logger();
+    const logger = Logger();
 
     logger.header('Clean Feature Generator — File Structure');
     logger.newLine();

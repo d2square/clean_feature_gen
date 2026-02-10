@@ -25,14 +25,10 @@ import 'utils/string_utils.dart';
 /// await generator.generate();
 /// ```
 class FeatureGenerator {
-  final FeatureConfig config;
-  final String projectRoot;
-  final Logger logger;
-  final bool overwrite;
-
-  int _filesCreated = 0;
-  int _filesSkipped = 0;
-
+  /// Creates a new [FeatureGenerator].
+  ///
+  /// Requires a [config] and [projectRoot]. Optionally set [overwrite]
+  /// to replace existing files and provide a custom [logger].
   FeatureGenerator({
     required this.config,
     required this.projectRoot,
@@ -40,9 +36,23 @@ class FeatureGenerator {
     Logger? logger,
   }) : logger = logger ?? const Logger();
 
+  /// The feature configuration to generate from.
+  final FeatureConfig config;
+
+  /// Root path of the Flutter project.
+  final String projectRoot;
+
+  /// Logger instance for CLI output.
+  final Logger logger;
+
+  /// Whether to overwrite existing files.
+  final bool overwrite;
+
+  int _filesCreated = 0;
+  int _filesSkipped = 0;
+
   /// Generate all files for the feature.
   Future<void> generate() async {
-    // Validate
     final errors = config.validate();
     if (errors.isNotEmpty) {
       logger.error('Configuration errors:');
@@ -58,49 +68,39 @@ class FeatureGenerator {
     logger.info('State management: ${config.stateManagement.name}');
     logger.newLine();
 
-    // Generate domain layer
     logger.info('📁 Domain Layer');
     await _generateDomainLayer(featurePath);
 
-    // Generate data layer
     logger.info('📁 Data Layer');
     await _generateDataLayer(featurePath);
 
-    // Generate presentation layer
     logger.info('📁 Presentation Layer');
     await _generatePresentationLayer(featurePath);
 
-    // Generate DI
     if (config.generateDi) {
       logger.info('📁 Dependency Injection');
       await _generateDi(featurePath);
     }
 
-    // Generate routes
     if (config.generateRoutes) {
       logger.info('📁 Routes');
       await _generateRoutes(featurePath);
     }
 
-    // Generate tests
     if (config.generateTests) {
       logger.info('📁 Tests');
       await _generateTests();
     }
 
-    // Generate barrel file
     await _generateBarrelFile(featurePath);
 
     logger.summary(_filesCreated, _filesSkipped, config.name);
   }
 
-  // ─── Domain Layer ────────────────────────────────────────
-
   Future<void> _generateDomainLayer(String featurePath) async {
     final domainPath = p.join(featurePath, 'domain');
 
-    // Entities
-    final entityTemplate = const EntityTemplate();
+    const entityTemplate = EntityTemplate();
     for (final model in config.models) {
       await _writeFile(
         p.join(domainPath, 'entities', '${model.name.toSnakeCase}_entity.dart'),
@@ -108,8 +108,7 @@ class FeatureGenerator {
       );
     }
 
-    // Failure class
-    final usecaseTemplate = const UsecaseTemplate();
+    const usecaseTemplate = UsecaseTemplate();
     if (config.usecases.any((u) => u.useEither)) {
       await _writeFile(
         p.join(domainPath, 'entities', 'failure.dart'),
@@ -117,15 +116,13 @@ class FeatureGenerator {
       );
     }
 
-    // Repository interface
-    final repoTemplate = const RepositoryTemplate();
+    const repoTemplate = RepositoryTemplate();
     await _writeFile(
       p.join(domainPath, 'repositories',
           '${config.name.toSnakeCase}_repository.dart'),
       repoTemplate.generateInterface(config),
     );
 
-    // Use cases
     for (final usecase in config.usecases) {
       await _writeFile(
         p.join(domainPath, 'usecases',
@@ -135,13 +132,10 @@ class FeatureGenerator {
     }
   }
 
-  // ─── Data Layer ──────────────────────────────────────────
-
   Future<void> _generateDataLayer(String featurePath) async {
     final dataPath = p.join(featurePath, 'data');
 
-    // Models
-    final modelTemplate = const ModelTemplate();
+    const modelTemplate = ModelTemplate();
     for (final model in config.models) {
       await _writeFile(
         p.join(dataPath, 'models', '${model.name.toSnakeCase}_model.dart'),
@@ -149,8 +143,7 @@ class FeatureGenerator {
       );
     }
 
-    // Data sources
-    final dsTemplate = const DataSourceTemplate();
+    const dsTemplate = DataSourceTemplate();
     if (config.hasApi) {
       await _writeFile(
         p.join(dataPath, 'datasources',
@@ -166,8 +159,7 @@ class FeatureGenerator {
       );
     }
 
-    // Repository implementation
-    final repoTemplate = const RepositoryTemplate();
+    const repoTemplate = RepositoryTemplate();
     await _writeFile(
       p.join(dataPath, 'repositories',
           '${config.name.toSnakeCase}_repository_impl.dart'),
@@ -175,14 +167,11 @@ class FeatureGenerator {
     );
   }
 
-  // ─── Presentation Layer ──────────────────────────────────
-
   Future<void> _generatePresentationLayer(String featurePath) async {
     final presPath = p.join(featurePath, 'presentation');
-    final blocTemplate = const BlocTemplate();
+    const blocTemplate = BlocTemplate();
     final snakeName = config.name.toSnakeCase;
 
-    // BLoC or Cubit
     if (config.stateManagement == StateManagement.bloc) {
       await _writeFile(
         p.join(presPath, 'bloc', '${snakeName}_bloc.dart'),
@@ -199,23 +188,19 @@ class FeatureGenerator {
       );
     }
 
-    // State file always goes in 'bloc' folder for both (shared)
     await _writeFile(
       p.join(presPath, 'bloc', '${snakeName}_state.dart'),
       blocTemplate.generateState(config),
     );
 
-    // Screens
-    final screenTemplate = const ScreenTemplate();
+    const screenTemplate = ScreenTemplate();
     for (final screen in config.screens) {
       await _writeFile(
         p.join(presPath, 'screens', '${screen.name.toSnakeCase}.dart'),
         screenTemplate.generate(screen, config),
       );
 
-      // Create empty widgets directory for each screen
-      final widgetsDir = Directory(
-          p.join(presPath, 'widgets'));
+      final widgetsDir = Directory(p.join(presPath, 'widgets'));
       if (!widgetsDir.existsSync()) {
         widgetsDir.createSync(recursive: true);
         await _writeFile(
@@ -226,10 +211,8 @@ class FeatureGenerator {
     }
   }
 
-  // ─── DI & Routes ─────────────────────────────────────────
-
   Future<void> _generateDi(String featurePath) async {
-    final diTemplate = const DiTemplate();
+    const diTemplate = DiTemplate();
     await _writeFile(
       p.join(featurePath, 'di', '${config.name.toSnakeCase}_injection.dart'),
       diTemplate.generate(config),
@@ -237,19 +220,17 @@ class FeatureGenerator {
   }
 
   Future<void> _generateRoutes(String featurePath) async {
-    final routeTemplate = const RouteTemplate();
+    const routeTemplate = RouteTemplate();
     await _writeFile(
       p.join(featurePath, 'routes', '${config.name.toSnakeCase}_routes.dart'),
       routeTemplate.generate(config),
     );
   }
 
-  // ─── Tests ───────────────────────────────────────────────
-
   Future<void> _generateTests() async {
     final testPath = p.join(
         projectRoot, 'test', 'features', config.name.toSnakeCase);
-    final testTemplate = const TestTemplate();
+    const testTemplate = TestTemplate();
 
     await _writeFile(
       p.join(testPath, '${config.name.toSnakeCase}_bloc_test.dart'),
@@ -261,8 +242,6 @@ class FeatureGenerator {
       testTemplate.generateRepositoryTest(config),
     );
   }
-
-  // ─── Barrel File ─────────────────────────────────────────
 
   Future<void> _generateBarrelFile(String featurePath) async {
     final buffer = StringBuffer();
@@ -309,12 +288,10 @@ class FeatureGenerator {
     }
 
     await _writeFile(
-      p.join(featurePath, '${snake}.dart'),
+      p.join(featurePath, '$snake.dart'),
       buffer.toString(),
     );
   }
-
-  // ─── Helpers ─────────────────────────────────────────────
 
   String _featurePath() {
     final base = config.basePath ?? 'lib/features';

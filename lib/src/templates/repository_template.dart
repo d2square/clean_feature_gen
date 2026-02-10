@@ -124,7 +124,7 @@ class RepositoryTemplate {
         buffer.writeln('      ${_methodBody(usecase, config)}');
         buffer.writeln('    } catch (e) {');
         buffer.writeln(
-            "      return (failure: Failure(message: e.toString()), data: null);");
+            '      return (failure: Failure(message: e.toString()), data: null);');
         buffer.writeln('    }');
       } else {
         buffer.writeln('    ${_methodBody(usecase, config)}');
