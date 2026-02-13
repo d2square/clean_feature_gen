@@ -1,3 +1,8 @@
+## 1.0.2
+
+- Fixed repository link in pubspec.yaml
+- Updated homepage and issue tracker URLs
+
 ## 1.0.1
 
 - Fix: Shortened pubspec description to meet pub.dev 60-180 char requirement
