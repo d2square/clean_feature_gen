@@ -1,3 +1,6 @@
+## 1.0.3
+- Maintenance release: clean up package metadata.
+
 ## 1.0.2
 
 - Fixed repository link in pubspec.yaml

@@ -1,6 +1,6 @@
 name: clean_feature_gen
 description: "Generate complete Clean Architecture features for Flutter — entities, models, BLoC/Cubit, repositories, DI, routes, and tests from YAML config."
-version: 1.0.2
+version: 1.0.3
 homepage: https://github.com/d2square/clean_feature_gen
 repository: https://github.com/d2square/clean_feature_gen
 issue_tracker: https://github.com/d2square/clean_feature_gen/issues
